@@ -6,17 +6,26 @@ import json
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 FPS = 60
-
+L_SPEED = 5
+R_SPEED = 5
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("fence")
 clock = pygame.time.Clock()
 
+
+# info
+# player size is (60,90)
+
 with open("fencing.json", "r") as f:
     JSON = json.load(f)
 
+# ----------------- initialize images --------------
+l_fencer_base = pygame.image.load(JSON["player1"]["left_fencer"])
+l_fencer_parry = pygame.image.load(JSON['player1']['left_fencer_parry'])
 
-print(JSON["name"])
+
+
 
 
 
@@ -36,10 +45,18 @@ def lines(x, y, width, height, count):
 box = pygame.Rect(0, 300, 800, 300)
 strip = pygame.Rect(20, 320, 760, 75)
 
+#player_test = pygame.Rect(50,270,60,90)
+
 ignore_this_line = pygame.Rect(20,320,4,75) #to cover up an extra line on the strip
 
 box, line_positions = lines(0, 300, 800, 300, 14)
 strip, line_positions2 = lines(20, 320, 760, 75, 6)
+
+l_fencer_rect = l_fencer_base.get_rect()
+l_fencer_rect.x = 60
+l_fencer_rect.y = 270
+
+l_fencer_current = l_fencer_base
 # --- Main Loop ---
 running = True
 while running:
@@ -47,7 +64,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    # --- Drawing ---
+        #if event.type == pygame.KEYDOWN:
+            #if event.key == pygame.K_LEFT:
+    keys = pygame.key.get_pressed()
+
+    # --- map drawing ---
     screen.fill((162,124,91))
 
     #BASE
@@ -64,14 +85,30 @@ while running:
     for start, end in line_positions2:
         pygame.draw.line(screen, (225,225,225), start, end, 4)
 
-
-    
-
-
     pygame.draw.rect(screen, (255,255,255), ignore_this_line)
+    #------------------------------
+
+    #just to see the player rect for now
+    #pygame.draw.rect(screen, (255,0,255), r_fencer_rect)
+
+    screen.blit(l_fencer_current,(l_fencer_rect))
 
 
+    if keys[pygame.K_a]:
+        l_fencer_rect.x -= L_SPEED
+    if keys[pygame.K_d]:
+        l_fencer_rect.x += L_SPEED
 
+    #slow when blocking
+    if keys[pygame.K_s]:
+        l_fencer_current = l_fencer_parry
+        L_SPEED = 2.5
+
+    #regulate
+    if keys[pygame.K_s] == False:
+        l_fencer_current = l_fencer_base
+        L_SPEED = 5
+        
 
     pygame.display.flip()  # update the screen
     clock.tick(FPS)        

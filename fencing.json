@@ -1,5 +1,11 @@
 {
-  "name": "json",
-  "age": 30,
-  "thisisatest": true
+  "player1": {
+    "left_fencer": "assets/left_fencer.png",
+    "left_fencer_parry": "assets/l_fencer_parry.png"
+  },
+  "player2": {
+
+  }
+  
+  
 }
