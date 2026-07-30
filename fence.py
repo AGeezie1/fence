@@ -24,6 +24,8 @@ with open("fencing.json", "r") as f:
 l_fencer_base = pygame.image.load(JSON["player1"]["left_fencer"])
 l_fencer_parry = pygame.image.load(JSON['player1']['left_fencer_parry'])
 
+r_fencer_base = pygame.image.load(JSON['player2']['right_fencer'])
+r_fencer_parry = pygame.image.load(JSON['player2']['right_fencer_parry'])
 
 
 
@@ -52,10 +54,16 @@ ignore_this_line = pygame.Rect(20,320,4,75) #to cover up an extra line on the st
 box, line_positions = lines(0, 300, 800, 300, 14)
 strip, line_positions2 = lines(20, 320, 760, 75, 6)
 
+
 l_fencer_rect = l_fencer_base.get_rect()
 l_fencer_rect.x = 60
 l_fencer_rect.y = 270
 
+r_fencer_rect = r_fencer_base.get_rect()
+r_fencer_rect.x = 700
+r_fencer_rect.y = 270
+
+r_fencer_current = r_fencer_base
 l_fencer_current = l_fencer_base
 # --- Main Loop ---
 running = True
@@ -92,23 +100,39 @@ while running:
     #pygame.draw.rect(screen, (255,0,255), r_fencer_rect)
 
     screen.blit(l_fencer_current,(l_fencer_rect))
+    screen.blit(r_fencer_current,(r_fencer_rect))
 
-
-    if keys[pygame.K_a]:
+    if keys[pygame.K_a] and l_fencer_rect.x > 10 :
         l_fencer_rect.x -= L_SPEED
-    if keys[pygame.K_d]:
+    if keys[pygame.K_d] and l_fencer_rect.x < r_fencer_rect.x - 15:
         l_fencer_rect.x += L_SPEED
+
+    if keys[pygame.K_LEFT] and r_fencer_rect.x > l_fencer_rect.x + 15:
+        r_fencer_rect.x -= R_SPEED
+    if keys[pygame.K_RIGHT] and r_fencer_rect.x < 730:
+        r_fencer_rect.x += R_SPEED
+    
 
     #slow when blocking
     if keys[pygame.K_s]:
         l_fencer_current = l_fencer_parry
         L_SPEED = 2.5
-
     #regulate
     if keys[pygame.K_s] == False:
         l_fencer_current = l_fencer_base
         L_SPEED = 5
-        
+
+    if keys[pygame.K_DOWN]:
+        r_fencer_current = r_fencer_parry
+        R_SPEED = 2.5
+
+    if keys[pygame.K_DOWN] == False:
+        r_fencer_current = r_fencer_base
+        R_SPEED = 5
+
+
+
+    
 
     pygame.display.flip()  # update the screen
     clock.tick(FPS)        

@@ -4,7 +4,8 @@
     "left_fencer_parry": "assets/l_fencer_parry.png"
   },
   "player2": {
-
+    "right_fencer": "assets/right_fencer.png",
+    "right_fencer_parry": "assets/r_fencer_parry.png"
   }
   
   
