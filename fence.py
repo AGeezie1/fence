@@ -1,6 +1,7 @@
 import pygame
 import sys
 import json
+import time
 
 # --- Settings ---
 SCREEN_WIDTH = 800
@@ -29,6 +30,8 @@ r_fencer_parry = pygame.image.load(JSON['player2']['right_fencer_parry'])
 
 
 
+def delay(seconds):
+    time.sleep(seconds)
 
 
 def lines(x, y, width, height, count):
@@ -65,6 +68,10 @@ r_fencer_rect.y = 270
 
 r_fencer_current = r_fencer_base
 l_fencer_current = l_fencer_base
+
+r_action = []
+l_action = []
+
 # --- Main Loop ---
 running = True
 while running:
@@ -72,8 +79,31 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        #if event.type == pygame.KEYDOWN:
-            #if event.key == pygame.K_LEFT:
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                r_action.append("advance")
+            if event.key == pygame.K_RIGHT:
+                r_action.append("retreat")
+
+            if event.key == pygame.K_d:
+                l_action.append("advance")
+            if event.key == pygame.K_a:
+                l_action.append("retreat")
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                r_action.remove("advance")
+            if event.key == pygame.K_RIGHT:
+                r_action.remove("retreat")
+
+            if event.key == pygame.K_d:
+                l_action.remove("advance")
+            if event.key == pygame.K_a:
+                l_action.remove("retreat")
+
+        
+
     keys = pygame.key.get_pressed()
 
     # --- map drawing ---
@@ -103,8 +133,10 @@ while running:
     screen.blit(r_fencer_current,(r_fencer_rect))
 
     if keys[pygame.K_a] and l_fencer_rect.x > 10 :
+        #l_action.append("retreat")
         l_fencer_rect.x -= L_SPEED
     if keys[pygame.K_d] and l_fencer_rect.x < r_fencer_rect.x - 15:
+        #l_action.append("advance")
         l_fencer_rect.x += L_SPEED
 
     if keys[pygame.K_LEFT] and r_fencer_rect.x > l_fencer_rect.x + 15:
@@ -130,9 +162,9 @@ while running:
         r_fencer_current = r_fencer_base
         R_SPEED = 5
 
+    #print(f"right:  {r_action}")
+    #print(f"left:   {l_action}")
 
-
-    
 
     pygame.display.flip()  # update the screen
     clock.tick(FPS)        
