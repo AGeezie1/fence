@@ -1,11 +1,13 @@
 {
   "player1": {
     "left_fencer": "assets/left_fencer.png",
-    "left_fencer_parry": "assets/l_fencer_parry.png"
+    "left_fencer_parry": "assets/l_fencer_parry.png",
+    "left_fencer_attack": "assets/l_fencer_attack.png"
   },
   "player2": {
     "right_fencer": "assets/right_fencer.png",
-    "right_fencer_parry": "assets/r_fencer_parry.png"
+    "right_fencer_parry": "assets/r_fencer_parry.png",
+    "right_fencer_attack": "assets/r_fencer_attack_5.png"
   }
   
   

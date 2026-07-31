@@ -24,9 +24,11 @@ with open("fencing.json", "r") as f:
 # ----------------- initialize images --------------
 l_fencer_base = pygame.image.load(JSON["player1"]["left_fencer"])
 l_fencer_parry = pygame.image.load(JSON['player1']['left_fencer_parry'])
+l_fencer_attack = pygame.image.load(JSON['player1']['left_fencer_attack'])
 
 r_fencer_base = pygame.image.load(JSON['player2']['right_fencer'])
 r_fencer_parry = pygame.image.load(JSON['player2']['right_fencer_parry'])
+r_fencer_attack = pygame.image.load(JSON['player2']['right_fencer_attack'])
 
 
 
@@ -85,22 +87,41 @@ while running:
                 r_action.append("advance")
             if event.key == pygame.K_RIGHT:
                 r_action.append("retreat")
-
+            if event.key == pygame.K_UP and "block" not in r_action:
+                r_action.append("attack")
+            if event.key == pygame.K_DOWN and "attack" not in r_action:
+                r_action.append("block")
+#--------------------------------------------------------
             if event.key == pygame.K_d:
                 l_action.append("advance")
             if event.key == pygame.K_a:
                 l_action.append("retreat")
-
+            if event.key == pygame.K_w and "block" not in l_action:
+                l_action.append("attack")
+            if event.key == pygame.K_s and "attack" not in l_action:
+                l_action.append("block")
+#--------------------------------------------------------
+#--------------------------------------------------------
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 r_action.remove("advance")
             if event.key == pygame.K_RIGHT:
                 r_action.remove("retreat")
-
+            if event.key == pygame.K_UP and "attack" in r_action:
+                r_action.remove("attack")
+            if event.key == pygame.K_DOWN and "block" in r_action:
+                r_action.remove("block")
+#--------------------------------------------------------
             if event.key == pygame.K_d:
                 l_action.remove("advance")
             if event.key == pygame.K_a:
                 l_action.remove("retreat")
+            if event.key == pygame.K_w and "attack" in l_action:
+                l_action.remove("attack")
+            if event.key == pygame.K_s and "block" in l_action:
+                l_action.remove("block")
+
+            
 
         
 
@@ -133,10 +154,8 @@ while running:
     screen.blit(r_fencer_current,(r_fencer_rect))
 
     if keys[pygame.K_a] and l_fencer_rect.x > 10 :
-        #l_action.append("retreat")
         l_fencer_rect.x -= L_SPEED
     if keys[pygame.K_d] and l_fencer_rect.x < r_fencer_rect.x - 15:
-        #l_action.append("advance")
         l_fencer_rect.x += L_SPEED
 
     if keys[pygame.K_LEFT] and r_fencer_rect.x > l_fencer_rect.x + 15:
@@ -146,25 +165,37 @@ while running:
     
 
     #slow when blocking
-    if keys[pygame.K_s]:
+    if "block" in l_action:
         l_fencer_current = l_fencer_parry
         L_SPEED = 2.5
     #regulate
-    if keys[pygame.K_s] == False:
+    if "block" not in l_action:
         l_fencer_current = l_fencer_base
         L_SPEED = 5
 
-    if keys[pygame.K_DOWN]:
+    if "block" in r_action:
         r_fencer_current = r_fencer_parry
         R_SPEED = 2.5
 
-    if keys[pygame.K_DOWN] == False:
+    if "block" not in r_action:
         r_fencer_current = r_fencer_base
-        R_SPEED = 5
+        R_SPEED = 5.5
+
+    if "attack" in l_action:
+        l_fencer_current = l_fencer_attack
+
+    if "attack" in r_action:
+        r_fencer_current = r_fencer_attack
+
 
     #print(f"right:  {r_action}")
     #print(f"left:   {l_action}")
 
+    if l_fencer_rect.colliderect(r_fencer_rect):
+        if "attack" in l_action and "block" not in r_action:
+            print("hit! LEFT")
+        if "attack" in r_action and "block" not in l_action:
+            print("hit! RIGHT")
 
     pygame.display.flip()  # update the screen
     clock.tick(FPS)        
